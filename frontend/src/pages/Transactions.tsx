@@ -45,6 +45,9 @@ export const Transactions = () => {
       setTransactions(txRes.data.data.transactions);
       setFolders(folderRes.data.data);
       setAccounts(accRes.data.data);
+      if (accRes.data.data.length > 0) {
+        setForm((prev) => ({ ...prev, accountId: prev.accountId || accRes.data.data[0].id }));
+      }
     } catch {
       toast.error('Failed to load transactions');
     } finally {
@@ -56,19 +59,25 @@ export const Transactions = () => {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.accountId) {
+      toast.error('Please select an account');
+      return;
+    }
     setCreating(true);
     try {
       await transactionsApi.create({
         ...form,
         amount: Number(form.amount),
+        description: form.description.trim() || form.merchant.trim() || `${form.type} Transaction`,
         folderId: form.folderId || undefined,
       });
       toast.success('Transaction added!');
       setModalOpen(false);
-      setForm({ accountId: '', folderId: '', amount: '', type: 'DEBIT', description: '', merchant: '' });
+      setForm({ accountId: accounts[0]?.id || '', folderId: '', amount: '', type: 'DEBIT', description: '', merchant: '' });
       fetchAll();
     } catch (err: any) {
-      toast.error(err.response?.data?.message ?? 'Failed');
+      const fieldError = err.response?.data?.errors?.[0]?.message;
+      toast.error(fieldError || err.response?.data?.message || 'Failed to add transaction');
     } finally {
       setCreating(false);
     }

@@ -3,11 +3,11 @@ import { TransactionType,TransactionStatus } from "@prisma/client";
 
 export const createTransactionSchema = z.object({
     body: z.object({
-        accountId: z.string().min(1,"Account ID is required"),
+        accountId: z.string().min(1, "Please select an account"),
         folderId: z.string().optional(),
-        amount: z.number().positive("Amount must be greater than 0"),
+        amount: z.coerce.number().positive("Amount must be greater than 0"),
         type: z.nativeEnum(TransactionType),
-        description: z.string().min(1,"Description is required"),
+        description: z.string().optional().transform((val) => (val && val.trim() ? val.trim() : "Transaction")),
         merchant: z.string().optional(),
         transactedAt: z.string().datetime().optional(),
         metadata: z.record(z.string(), z.any()).optional(),

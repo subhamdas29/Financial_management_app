@@ -28,7 +28,7 @@ export const transactionsService = {
 
     if (input.type === 'DEBIT') {
       if (new Decimal(account.balance).lessThan(input.amount)) {
-        throw new ApiError(400, 'Insufficient balance');
+        throw new ApiError(400, `Insufficient balance in ${account.name} (Current balance: ₹${account.balance})`);
       }
     }
 
