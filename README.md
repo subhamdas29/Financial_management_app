@@ -35,6 +35,12 @@ Built as a full-stack learning project to master **Node.js**, **Express**, **Typ
 
 ---
 
+##!!!IMPORTANT
+
+The backend is deployed on Render free tier so it will take some time to load when the first request is being sent.
+
+---
+
 ## ✨ Features
 
 ### 💳 Account Management
@@ -326,12 +332,17 @@ Transfer
 
 ## ☁️ Deployment
 
-### Backend — Railway
+### Database — SupaBase
+1. Connect via github
+2. Create a project and insert a database password
+3. Copy the database url and database direct url
+   
+### Backend — Render
 1. Push code to GitHub
-2. Create new project on [railway.app](https://railway.app)
-3. Add PostgreSQL database plugin
-4. Set environment variables
-5. Railway auto-deploys on push
+2. Create new project on Render app
+3. Add SupaBase database url in env variables
+4. Set other environment variables
+5. Render auto-deploys on push
 
 ### Frontend — Vercel
 1. Import repo on [vercel.com](https://vercel.com)
