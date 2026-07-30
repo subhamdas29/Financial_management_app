@@ -24,7 +24,7 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 app.use(helmet()); //  to protect from XSS or clickjacking
 const allowedOrigins = [
   'http://localhost:5173',
-  process.env.FRONTEND_URL ?? '',
+  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL.trim()] : []),
 ];
 
 app.use(cors({
@@ -34,13 +34,18 @@ app.use(cors({
 app.use(morgan("dev")); // logger
 app.use(express.json()); // to use json
 
+// root route
+app.get("/", (req: Request, res: Response) => {
+  res.json({ status: "ok", message: "Financial Management API is running" });
+});
+
 // routers
 app.use("/api/auth", authRouter);
 app.use("/api/accounts", accountsRouter);
 app.use("/api/transactions", transactionsRouter);
 app.use("/api/folders", foldersRouter);
 app.use("/api/transfers", transfersRouter);
-app.use("/api/users/", userRouter);
+app.use("/api/users", userRouter);
 
 app.get("/health", async(req: Request, res: Response)=>{
   try{
@@ -57,5 +62,5 @@ initSocket(httpServer);
 
 
 httpServer.listen(PORT, '0.0.0.0', () =>{
-  console.log(`Server running on http://localhost:${PORT}`);
-})
+  console.log(`🚀 Server running on port ${PORT}`);
+});
