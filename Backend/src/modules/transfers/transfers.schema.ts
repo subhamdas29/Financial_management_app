@@ -4,8 +4,8 @@ export const createTransferSchema = z.object({
     body: z.object({
         fromAccountId: z.string().min(1, 'Source account is required'),
         toAccountId: z.string().min(1, 'Destination account is required'),
-        amount: z.number().positive('Amount must be greater than 0'),
-        description: z.string().optional(),
+        amount: z.coerce.number().positive('Amount must be greater than 0'),
+        description: z.string().optional().transform((val) => (val && val.trim() ? val.trim() : undefined)),
     }).refine((data) => data.fromAccountId !== data.toAccountId, {
         message: 'Cannot transfer to the same account',
         path: ['toAccountId'],

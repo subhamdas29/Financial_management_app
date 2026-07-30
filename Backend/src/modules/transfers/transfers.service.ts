@@ -26,7 +26,7 @@ export const transfersService = {
 
     // Check sufficient balance
     if (new Decimal(fromAccount.balance).lessThan(input.amount)) {
-      throw new ApiError(400, 'Insufficient balance in source account');
+      throw new ApiError(400, `Insufficient balance in ${fromAccount.name} (Current balance: ₹${fromAccount.balance})`);
     }
 
     // Everything runs atomically — if anything fails, all rolls back

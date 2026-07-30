@@ -31,6 +31,18 @@ export const Transfers = () => {
       setTransfers(txRes.data.data.transfers);
       setAccounts(accRes.data.data);
       setStats(statsRes.data.data);
+      if (accRes.data.data.length >= 2) {
+        setForm((prev) => ({
+          ...prev,
+          fromAccountId: prev.fromAccountId || accRes.data.data[0].id,
+          toAccountId: prev.toAccountId || accRes.data.data[1].id,
+        }));
+      } else if (accRes.data.data.length === 1) {
+        setForm((prev) => ({
+          ...prev,
+          fromAccountId: prev.fromAccountId || accRes.data.data[0].id,
+        }));
+      }
     } catch {
       toast.error('Failed to load transfers');
     } finally {
@@ -42,15 +54,29 @@ export const Transfers = () => {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.fromAccountId || !form.toAccountId) {
+      toast.error('Please select both source and destination accounts');
+      return;
+    }
+    if (form.fromAccountId === form.toAccountId) {
+      toast.error('Cannot transfer to the same account');
+      return;
+    }
     setCreating(true);
     try {
       await transfersApi.create({ ...form, amount: Number(form.amount) });
       toast.success('Transfer completed!');
       setModalOpen(false);
-      setForm({ fromAccountId: '', toAccountId: '', amount: '', description: '' });
+      setForm({
+        fromAccountId: accounts[0]?.id || '',
+        toAccountId: accounts[1]?.id || accounts[0]?.id || '',
+        amount: '',
+        description: '',
+      });
       fetchAll();
     } catch (err: any) {
-      toast.error(err.response?.data?.message ?? 'Transfer failed');
+      const fieldError = err.response?.data?.errors?.[0]?.message;
+      toast.error(fieldError || err.response?.data?.message || 'Transfer failed');
     } finally {
       setCreating(false);
     }
