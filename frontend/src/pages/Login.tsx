@@ -21,7 +21,8 @@ export const Login = () => {
       setAuth(data.data.user, data.data.accessToken, data.data.refreshToken);
       navigate('/');
     } catch (err: any) {
-      toast.error(err.response?.data?.message ?? 'Login failed');
+      const fieldError = err.response?.data?.errors?.[0]?.message;
+      toast.error(fieldError || err.response?.data?.message || 'Login failed');
     } finally {
       setLoading(false);
     }
