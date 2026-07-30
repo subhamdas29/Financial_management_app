@@ -35,7 +35,7 @@ Built as a full-stack learning project to master **Node.js**, **Express**, **Typ
 
 ---
 
-##!!!IMPORTANT
+## IMPORTANT!!!
 
 The backend is deployed on Render free tier so it will take some time to load when the first request is being sent.
 
