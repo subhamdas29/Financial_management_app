@@ -18,7 +18,7 @@ import userRouter from "./modules/users/users.router";
 
 const app = express();
 const httpServer = createServer(app);
-const PORT= process.env.PORT || 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 // middlewares
 app.use(helmet()); //  to protect from XSS or clickjacking
@@ -56,6 +56,6 @@ app.use(errorMiddleware); // error handler
 initSocket(httpServer); 
 
 
-httpServer.listen(PORT,()=>{
+httpServer.listen(PORT, '0.0.0.0', () =>{
   console.log(`Server running on http://localhost:${PORT}`);
 })
